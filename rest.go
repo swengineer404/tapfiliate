@@ -52,14 +52,18 @@ func (c *restClient) do(method, path string, dto, result any) error {
 
 	defer res.Body.Close()
 
-	if res.StatusCode < 200 || res.StatusCode > 299 {
-		resb, err := io.ReadAll(res.Body)
-		if err != nil {
-			return err
-		}
+	resb, err := io.ReadAll(res.Body)
+	if err != nil {
+		return err
+	}
 
+	if res.StatusCode < 200 || res.StatusCode > 299 {
 		return fmt.Errorf("status_code: %d | message: %s", res.StatusCode, resb)
 	}
 
-	return json.NewDecoder(res.Body).Decode(result)
+	if err := json.Unmarshal(resb, result); err != nil {
+		return fmt.Errorf("failed to decode[%s]: %s", err, resb)
+	}
+
+	return nil
 }

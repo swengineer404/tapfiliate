@@ -3,8 +3,9 @@ package tapfiliate
 import "fmt"
 
 type Client struct {
-	Click *Click
-	rest  *restClient
+	Click      *Click
+	Conversion *Conversion
+	rest       *restClient
 }
 
 func New(apiKey string) *Client {
@@ -15,6 +16,7 @@ func New(apiKey string) *Client {
 	}
 
 	c.Click = NewClickService(c)
+	c.Conversion = NewConversionService(c)
 
 	return c
 }
